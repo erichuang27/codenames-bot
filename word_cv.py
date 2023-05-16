@@ -14,9 +14,10 @@ def read_words(filepath):
     total_thresh = background_thresh + ADD_THRESH
     _,thresh_img = cv2.threshold(blur,total_thresh,255,cv2.THRESH_BINARY)
 
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3,3))
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (7,7))
     opening = cv2.morphologyEx(thresh_img, cv2.MORPH_OPEN, kernel, iterations=1)
     contours, hier = cv2.findContours(opening,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+    contours = [contour for contour,h in zip(contours,hier[0]) if h[3] == -1 and h[2] > -1]
     top_25_contours = sorted(contours, key=lambda x : cv2.contourArea(x) if cv2.contourArea(x) < (img_h * img_w)/25 else 0,reverse=True)[:25]
 
     # sort x and y later
@@ -114,9 +115,9 @@ def read_words(filepath):
             center = [cent_x, cent_y]
 
             warp = cv2.rotate(flattener(img_board, pts, w, h),cv2.ROTATE_90_COUNTERCLOCKWISE)
-            cropped_img = warp[warp.shape[0]//2:][:]
+            cropped_img = warp[warp.shape[0]//2 + 20: warp.shape[0]-20, 20:warp.shape[1]-20]
             blur = cv2.GaussianBlur(cropped_img, (3,3), 0)
-            contrast = cv2.convertScaleAbs(blur, alpha=2, beta=0)
+            contrast = cv2.convertScaleAbs(blur, alpha=1.3, beta=0)
             thresh = cv2.threshold(contrast, 0, 255, cv2.THRESH_BINARY_INV  + cv2.THRESH_OTSU)[1]
             words.append(pytesseract.image_to_string(thresh, lang='eng', config='--psm 6').strip())
         return words
