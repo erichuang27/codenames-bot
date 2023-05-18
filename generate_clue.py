@@ -21,8 +21,8 @@ best_guess = ""
 best_words = []
 best_sim = 0
 
-red_words = ["cover", "rip", "snowman", "volcano", "dog", "cave", "soldier", "ball"]
-black_words = ["robot"]
+red_words = ["lava", "cave", "man"]
+black_words = ["rail"]
 
 # Filter words that are not in the vocab of the model
 def filter_words(words):
@@ -32,7 +32,7 @@ def filter_words(words):
             _ = model[word]
             filtered_words.append(word)
         except KeyError:
-            # print(word, "not in vocab")
+            print(word, "not in vocab")
             continue
     return filtered_words
 
@@ -51,21 +51,25 @@ start = 1 if len(red_words) == 1 else 2
 possible_answers = powerset(filtered_red, start, 4)
 
 for possible_answer in possible_answers:
-
     guesses = model.most_similar(positive=list(possible_answer), negative=filtered_black)
 
     # Use stemming to filter out words that are from the same root word
-    guess_index = 0
-    for words in possible_answer:
-        while(ps.stem(words) == ps.stem(guesses[guess_index][0])):
-            guess_index += 1
-            if guess_index >= len(guesses):
-                guess_index = 0
+    final_guess = []
+    print(guesses)
+    for guess in guesses:
+        final_guess = guess
+        valid_guess = True
+        for word in possible_answer:
+            if(ps.stem(word) == ps.stem(guess[0]) or word.lower() in guess[0].lower() or guess[0].lower() in word.lower()):
+                valid_guess = False
                 break
+        if valid_guess:
+            break
 
-    if guesses[guess_index][1] > best_sim:
-        best_guess = guesses[guess_index][0]
+    if final_guess[1] > best_sim:
+        print(guesses)
+        best_guess = final_guess[0]
         best_words = possible_answer
-        best_sim = guesses[guess_index][1]
+        best_sim = final_guess[1]
 
 print(best_guess, best_words, best_sim)
