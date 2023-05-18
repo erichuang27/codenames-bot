@@ -3,8 +3,8 @@
 ## How to Run
 
 ### Required Downloads
-- https://github.com/tesseract-ocr/tesseract
-- Pip install necessary packages at top of codenames.ipynb file
+- Install pytesseract -> https://github.com/tesseract-ocr/tesseract
+- pip install -r requirements.txt
 
 
 ### Run AI
