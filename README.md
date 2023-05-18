@@ -1,8 +1,9 @@
-# codenames-bot
+# CS 4701 CodeNames AI SpyMaster
 
-Required glove files
-- https://www.kaggle.com/datasets/danielwillgeorge/glove6b100dtxt
-- https://www.kaggle.com/datasets/thanakomsn/glove6b300dtxt
+## How to Run
 
-Required Tesseract download
+### Required Tesseract Download
 - https://github.com/tesseract-ocr/tesseract
+
+### Run AI
+- Run through codenames.ipynb file
